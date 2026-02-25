@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+eggs/
+*.egg
+
+# Build outputs
+dist/
+build/
+frontend/build/
+*.tsbuildinfo
+
+# Environment files (contain secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend-python/.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# Snowflake
+*.snowsql
+
+# Temp files
+*.tmp
+*.temp
+.cache/
+
+# Test scripts (contain credentials)
+test_simple.py
+test_connection.py

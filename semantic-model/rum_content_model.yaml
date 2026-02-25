@@ -1,0 +1,569 @@
+# Thomson Reuters Content Licensing Analytics - Semantic Model
+# For Snowflake Cortex Analyst - Hackathon 2026
+
+name: tr_content_licensing_analytics
+description: |
+  Semantic layer for Thomson Reuters content licensing analytics.
+  Enables natural language queries on orders, revenue, customers,
+  contacts, and licensing contracts.
+
+# Database and schema configuration
+database: MYDATASPACE
+schema: A206448_DATA_HACKATHON_2026_IDT_AUTOMATES
+
+# Define the logical tables
+tables:
+  # Orders/Transactions Fact Table (Main revenue data)
+  - name: item_ordered
+    description: Fact table containing all ordered items with revenue, product, and transaction details
+    base_table: V_GOLD_FACT_ITEM_ORDERED
+    columns:
+      - name: ORDERED_ITEM_ID
+        description: Unique identifier for each ordered item
+        data_type: VARCHAR
+        synonyms: [order_item_id, item_id, transaction_id]
+
+      - name: CONTACT_ID
+        description: Reference to the contact who placed the order
+        data_type: VARCHAR
+
+      - name: ASSET_ID
+        description: Unique identifier for the content asset
+        data_type: VARCHAR
+        synonyms: [content_id, media_id, image_id]
+
+      - name: BILLING_ACCOUNT_ID
+        description: Reference to the billing account
+        data_type: VARCHAR
+        synonyms: [account_id, customer_id]
+
+      - name: ORG_ACCOUNT_ID
+        description: Reference to the organization account
+        data_type: VARCHAR
+
+      - name: ORDERIDENTIFIER
+        description: Order identifier
+        data_type: VARCHAR
+        synonyms: [order_id]
+
+      - name: CREATED_DATE
+        description: Date and time when the order was created
+        data_type: TIMESTAMP
+        synonyms: [order_date, transaction_date, date]
+
+      - name: ORIGINAL_ORDER_DATE
+        description: Original order date
+        data_type: TIMESTAMP
+
+      - name: PRODUCT_ID
+        description: Product identifier
+        data_type: VARCHAR
+
+      - name: PRODUCT_CODE
+        description: Product code
+        data_type: VARCHAR
+        synonyms: [sku, product_sku]
+
+      - name: ITEM_NAME
+        description: Name of the ordered item
+        data_type: VARCHAR
+        synonyms: [product_name, name]
+
+      - name: ITEM_STATE
+        description: Current state of the item
+        data_type: VARCHAR
+        synonyms: [status, order_status]
+
+      - name: DESCRIPTION
+        description: Description of the item
+        data_type: VARCHAR
+
+      - name: CURRENCY
+        description: Currency of the transaction
+        data_type: VARCHAR
+        synonyms: [currency_code]
+
+      - name: TOTAL_AMOUNT_WITHOUT_TAX
+        description: Total amount excluding tax in original currency
+        data_type: NUMBER
+        synonyms: [revenue, amount, sales, net_amount, subtotal]
+
+      - name: TOTAL_AMOUNT_WITH_TAX
+        description: Total amount including tax in original currency
+        data_type: NUMBER
+        synonyms: [gross_amount, total]
+
+      - name: TOTAL_TAX
+        description: Tax amount
+        data_type: NUMBER
+        synonyms: [tax]
+
+      - name: TOTAL_AMOUNT_WITHOUT_TAX_HOME
+        description: Total amount excluding tax in home currency (USD)
+        data_type: NUMBER
+        synonyms: [revenue_usd, amount_usd, sales_usd, revenue_home]
+
+      - name: TOTAL_AMOUNT_WITH_TAX_HOME
+        description: Total amount including tax in home currency (USD)
+        data_type: NUMBER
+
+      - name: HOME_CURRENCY
+        description: Home currency code
+        data_type: VARCHAR
+
+      - name: QUANTITY
+        description: Quantity ordered
+        data_type: NUMBER
+        synonyms: [qty, units]
+
+      - name: MEDIA_TYPE
+        description: Type of media (Photo, Video, etc.)
+        data_type: VARCHAR
+        synonyms: [content_type, asset_type, format]
+        sample_values: [Photo, Video, Graphic, Editorial]
+
+      - name: HEADLINE
+        description: Headline or title of the content
+        data_type: VARCHAR
+        synonyms: [title, caption, content_title]
+
+      - name: PARTNER_CODE
+        description: Partner or source code
+        data_type: VARCHAR
+        synonyms: [source, provider]
+
+      - name: PHOTOGRAPHER_XCODE
+        description: Photographer identifier
+        data_type: VARCHAR
+        synonyms: [photographer, creator, author]
+
+      - name: TRANSACTION_TYPE
+        description: Type of transaction
+        data_type: VARCHAR
+        synonyms: [type, order_type]
+
+      - name: BILL_TO_COMPANY_NAME
+        description: Company name for billing
+        data_type: VARCHAR
+        synonyms: [company, customer_name, client_name]
+
+      - name: BILL_TO_CITY
+        description: Billing city
+        data_type: VARCHAR
+        synonyms: [city]
+
+      - name: BILL_TO_STATE
+        description: Billing state
+        data_type: VARCHAR
+        synonyms: [state]
+
+      - name: PAYMENT_TYPE
+        description: Payment method used
+        data_type: VARCHAR
+        synonyms: [payment_method]
+
+      - name: STATUS
+        description: Order status
+        data_type: VARCHAR
+        synonyms: [order_status]
+
+      - name: DATASOURCE
+        description: Source system of the data
+        data_type: VARCHAR
+
+      - name: CLA_CONTRACT_ID
+        description: Reference to content license agreement
+        data_type: VARCHAR
+        synonyms: [contract_id, license_id]
+
+  # Billing Account Dimension
+  - name: billing_account
+    description: Billing account information including customer details
+    base_table: V_GOLD_BILLING_ACCOUNT_DIM
+    columns:
+      - name: ACCOUNT_ID
+        description: Unique billing account identifier
+        data_type: VARCHAR
+        synonyms: [billing_account_id, customer_id]
+
+      - name: ACCOUNT_NAME
+        description: Name of the billing account
+        data_type: VARCHAR
+        synonyms: [customer_name, company_name, client_name]
+
+      - name: ACCOUNT_TYPE
+        description: Type of account
+        data_type: VARCHAR
+        synonyms: [customer_type, segment]
+
+      - name: SOLD_TO_LEGAL_ENTITY_NAME
+        description: Legal entity name
+        data_type: VARCHAR
+        synonyms: [legal_name, entity_name]
+
+      - name: INDUSTRY
+        description: Industry classification
+        data_type: VARCHAR
+        synonyms: [vertical, sector]
+        sample_values: [Media, Publishing, Advertising, Corporate, Government]
+
+      - name: SOLD_TO_COUNTRY
+        description: Country of the customer
+        data_type: VARCHAR
+        synonyms: [country, region, geography, location]
+
+      - name: SOLD_TO_COUNTRY_CODE_ISO2
+        description: ISO 2-letter country code
+        data_type: VARCHAR
+        synonyms: [country_code]
+
+      - name: BILL_TO_EMAIL
+        description: Billing contact email
+        data_type: VARCHAR
+
+  # Organization Account Dimension
+  - name: organization_account
+    description: Organization account information
+    base_table: V_GOLD_ORGANIZATION_ACCOUNT_DIM
+    columns:
+      - name: ACCOUNT_ID
+        description: Unique organization account identifier
+        data_type: VARCHAR
+        synonyms: [org_id, organization_id]
+
+      - name: ACCOUNT_NAME
+        description: Organization name
+        data_type: VARCHAR
+        synonyms: [org_name, organization_name, company]
+
+      - name: CONTACT_ACCTMGR_NAME
+        description: Account manager name
+        data_type: VARCHAR
+        synonyms: [account_manager, manager]
+
+      - name: CONTACT_ACCTMGR_EMAIL
+        description: Account manager email
+        data_type: VARCHAR
+
+      - name: COUNTRY_NAME
+        description: Country name
+        data_type: VARCHAR
+        synonyms: [country, region]
+
+      - name: COUNTRY_CODE_ISO2
+        description: ISO 2-letter country code
+        data_type: VARCHAR
+
+      - name: ACCOUNT_STATUS
+        description: Status of the account
+        data_type: VARCHAR
+        synonyms: [status]
+        sample_values: [Active, Inactive, Suspended]
+
+  # Contact Dimension
+  - name: contact
+    description: Contact information for customers
+    base_table: V_GOLD_CONTACT_DIM
+    columns:
+      - name: CONTACT_ID
+        description: Unique contact identifier
+        data_type: VARCHAR
+
+      - name: FIRST_NAME
+        description: Contact first name
+        data_type: VARCHAR
+
+      - name: LAST_NAME
+        description: Contact last name
+        data_type: VARCHAR
+
+      - name: EMAIL
+        description: Contact email address
+        data_type: VARCHAR
+
+      - name: PHONE
+        description: Contact phone number
+        data_type: VARCHAR
+
+      - name: CITY
+        description: Contact city
+        data_type: VARCHAR
+
+      - name: STATE
+        description: Contact state
+        data_type: VARCHAR
+
+      - name: COUNTRY
+        description: Contact country
+        data_type: VARCHAR
+        synonyms: [region, location]
+
+      - name: INDUSTRY
+        description: Contact's industry
+        data_type: VARCHAR
+
+      - name: IS_TRANSACTIONAL
+        description: Whether contact is transactional
+        data_type: BOOLEAN
+
+      - name: CONTACT_STATUS
+        description: Contact status (active/inactive)
+        data_type: BOOLEAN
+
+      - name: CREATED_DATE
+        description: Date contact was created
+        data_type: DATE
+        synonyms: [signup_date, acquisition_date]
+
+  # Content License Contract Fact
+  - name: license_contract
+    description: Content license contract creation events
+    base_table: V_GOLD_FACT_CONTENT_LICENSE_CONTRACT_CREATED
+    columns:
+      - name: ORDER_LINE_ITEM_ID
+        description: Order line item identifier
+        data_type: VARCHAR
+
+      - name: ZUORA_ORDER_ID
+        description: Zuora order identifier
+        data_type: VARCHAR
+
+      - name: CONTACT_ID
+        description: Contact who created the license
+        data_type: VARCHAR
+
+      - name: ASSET_ID
+        description: Licensed asset identifier
+        data_type: VARCHAR
+        synonyms: [content_id]
+
+      - name: ASSET_TYPE
+        description: Type of licensed asset
+        data_type: VARCHAR
+        synonyms: [content_type, media_type]
+
+  # Usage Agreement Contract Dimension
+  - name: usage_agreement
+    description: Usage agreement and contract details
+    base_table: V_GOLD_USAGE_AGREEMENT_CONTRACT_DIM
+    columns:
+      - name: CLA_CONTRACT_ID
+        description: Content license agreement contract ID
+        data_type: VARCHAR
+        synonyms: [contract_id, agreement_id, license_id]
+
+      - name: CLA_CONTRACT_TITLE
+        description: Contract title
+        data_type: VARCHAR
+        synonyms: [contract_name, title]
+
+      - name: CLA_CONTRACT_DESCRIPTION
+        description: Contract description
+        data_type: VARCHAR
+
+      - name: CLA_CONTRACT_USAGEDESCRIPTION
+        description: Usage description
+        data_type: VARCHAR
+        synonyms: [usage_terms]
+
+      - name: CLA_CONTRACT_USAGETYPE
+        description: Type of usage allowed
+        data_type: VARCHAR
+        synonyms: [usage_type, license_type]
+        sample_values: [Editorial, Commercial, Exclusive]
+
+      - name: CREATED_DATE
+        description: Contract creation date
+        data_type: VARCHAR
+
+      - name: START_DATE
+        description: Contract start date
+        data_type: VARCHAR
+        synonyms: [effective_date]
+
+      - name: EXPIRATION_DATE
+        description: Contract expiration date
+        data_type: VARCHAR
+        synonyms: [end_date]
+
+# Define relationships between tables
+relationships:
+  - name: order_to_billing_account
+    description: Links orders to billing accounts
+    from_table: item_ordered
+    from_column: BILLING_ACCOUNT_ID
+    to_table: billing_account
+    to_column: ACCOUNT_ID
+    relationship_type: many_to_one
+
+  - name: order_to_org_account
+    description: Links orders to organization accounts
+    from_table: item_ordered
+    from_column: ORG_ACCOUNT_ID
+    to_table: organization_account
+    to_column: ACCOUNT_ID
+    relationship_type: many_to_one
+
+  - name: order_to_contact
+    description: Links orders to contacts
+    from_table: item_ordered
+    from_column: CONTACT_ID
+    to_table: contact
+    to_column: CONTACT_ID
+    relationship_type: many_to_one
+
+  - name: order_to_usage_agreement
+    description: Links orders to usage agreements
+    from_table: item_ordered
+    from_column: CLA_CONTRACT_ID
+    to_table: usage_agreement
+    to_column: CLA_CONTRACT_ID
+    relationship_type: many_to_one
+
+  - name: license_to_contact
+    description: Links license contracts to contacts
+    from_table: license_contract
+    from_column: CONTACT_ID
+    to_table: contact
+    to_column: CONTACT_ID
+    relationship_type: many_to_one
+
+# Define calculated metrics
+metrics:
+  - name: total_revenue
+    description: Total revenue excluding tax in home currency (USD)
+    expression: SUM(item_ordered.TOTAL_AMOUNT_WITHOUT_TAX_HOME)
+    synonyms: [revenue, total_sales, sales, earnings, income]
+
+  - name: total_revenue_with_tax
+    description: Total revenue including tax in home currency
+    expression: SUM(item_ordered.TOTAL_AMOUNT_WITH_TAX_HOME)
+    synonyms: [gross_revenue, total_gross]
+
+  - name: average_order_value
+    description: Average order value
+    expression: AVG(item_ordered.TOTAL_AMOUNT_WITHOUT_TAX_HOME)
+    synonyms: [aov, avg_order, average_revenue]
+
+  - name: total_orders
+    description: Total number of orders
+    expression: COUNT(DISTINCT item_ordered.ORDERIDENTIFIER)
+    synonyms: [order_count, transactions, transaction_count]
+
+  - name: total_items
+    description: Total number of items ordered
+    expression: COUNT(item_ordered.ORDERED_ITEM_ID)
+    synonyms: [item_count, line_items]
+
+  - name: total_quantity
+    description: Total quantity ordered
+    expression: SUM(item_ordered.QUANTITY)
+    synonyms: [units, qty]
+
+  - name: unique_customers
+    description: Count of unique billing accounts
+    expression: COUNT(DISTINCT item_ordered.BILLING_ACCOUNT_ID)
+    synonyms: [customer_count, unique_accounts, client_count]
+
+  - name: unique_assets
+    description: Count of unique content assets
+    expression: COUNT(DISTINCT item_ordered.ASSET_ID)
+    synonyms: [content_count, asset_count]
+
+  - name: total_tax
+    description: Total tax amount
+    expression: SUM(item_ordered.TOTAL_TAX_HOME)
+
+# Time dimensions for time-based analysis
+time_dimensions:
+  - name: order_date
+    table: item_ordered
+    column: CREATED_DATE
+    granularities: [day, week, month, quarter, year]
+
+  - name: contact_created
+    table: contact
+    column: CREATED_DATE
+    granularities: [day, week, month, quarter, year]
+
+# Verified example queries for accuracy
+verified_queries:
+  - question: "What is the total revenue?"
+    sql: |
+      SELECT SUM(TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue
+      FROM V_GOLD_FACT_ITEM_ORDERED
+
+  - question: "Show revenue by country"
+    sql: |
+      SELECT
+        ba.SOLD_TO_COUNTRY as country,
+        SUM(io.TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue
+      FROM V_GOLD_FACT_ITEM_ORDERED io
+      JOIN V_GOLD_BILLING_ACCOUNT_DIM ba ON io.BILLING_ACCOUNT_ID = ba.ACCOUNT_ID
+      GROUP BY ba.SOLD_TO_COUNTRY
+      ORDER BY total_revenue DESC
+
+  - question: "Revenue by media type"
+    sql: |
+      SELECT
+        MEDIA_TYPE,
+        SUM(TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue,
+        COUNT(*) as order_count
+      FROM V_GOLD_FACT_ITEM_ORDERED
+      GROUP BY MEDIA_TYPE
+      ORDER BY total_revenue DESC
+
+  - question: "Top 10 customers by revenue"
+    sql: |
+      SELECT
+        ba.ACCOUNT_NAME,
+        ba.INDUSTRY,
+        ba.SOLD_TO_COUNTRY,
+        SUM(io.TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue
+      FROM V_GOLD_FACT_ITEM_ORDERED io
+      JOIN V_GOLD_BILLING_ACCOUNT_DIM ba ON io.BILLING_ACCOUNT_ID = ba.ACCOUNT_ID
+      GROUP BY ba.ACCOUNT_NAME, ba.INDUSTRY, ba.SOLD_TO_COUNTRY
+      ORDER BY total_revenue DESC
+      LIMIT 10
+
+  - question: "Monthly revenue trend"
+    sql: |
+      SELECT
+        DATE_TRUNC('month', CREATED_DATE) as month,
+        SUM(TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue
+      FROM V_GOLD_FACT_ITEM_ORDERED
+      GROUP BY month
+      ORDER BY month
+
+  - question: "Revenue by industry"
+    sql: |
+      SELECT
+        ba.INDUSTRY,
+        SUM(io.TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue,
+        COUNT(DISTINCT io.BILLING_ACCOUNT_ID) as customer_count
+      FROM V_GOLD_FACT_ITEM_ORDERED io
+      JOIN V_GOLD_BILLING_ACCOUNT_DIM ba ON io.BILLING_ACCOUNT_ID = ba.ACCOUNT_ID
+      GROUP BY ba.INDUSTRY
+      ORDER BY total_revenue DESC
+
+  - question: "Orders by status"
+    sql: |
+      SELECT
+        STATUS,
+        COUNT(*) as order_count,
+        SUM(TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue
+      FROM V_GOLD_FACT_ITEM_ORDERED
+      GROUP BY STATUS
+      ORDER BY order_count DESC
+
+  - question: "Top photographers by revenue"
+    sql: |
+      SELECT
+        PHOTOGRAPHER_XCODE,
+        COUNT(*) as items_sold,
+        SUM(TOTAL_AMOUNT_WITHOUT_TAX_HOME) as total_revenue
+      FROM V_GOLD_FACT_ITEM_ORDERED
+      WHERE PHOTOGRAPHER_XCODE IS NOT NULL
+      GROUP BY PHOTOGRAPHER_XCODE
+      ORDER BY total_revenue DESC
+      LIMIT 10
