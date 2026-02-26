@@ -92,13 +92,10 @@ Open http://localhost:3000
 
 ## Configuration
 
-### Backend Configuration (backend-python/app.py)
+### Backend Configuration (agent-connction/snowflake-connection.py)
 
+![alt text](image.png)
 ```python
-# LiteLLM/Claude Configuration
-ANTHROPIC_BASE_URL = "https://litellm.int.thomsonreuters.com/v1"
-ANTHROPIC_API_KEY = "your-api-key"
-ANTHROPIC_MODEL = "anthropic/claude-opus-4-5"
 
 # Snowflake Configuration (PAT Token Authentication)
 SNOWFLAKE_ACCOUNT = "THOMSONREUTERS-A206448_PROD"
@@ -109,6 +106,8 @@ SNOWFLAKE_DATABASE = "MYDATASPACE"
 SNOWFLAKE_SCHEMA = "A206448_DATA_HACKATHON_2026_IDT_AUTOMATES"
 SNOWFLAKE_ROLE = "your-role"
 ```
+### Agent Configuration (Insert the api token from the Open Arena model and provide it in the _FALLBACK_TOKEN as shown below)
+![alt text](image-1.png)
 
 ### Frontend Configuration (frontend/.env)
 
